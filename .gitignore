@@ -8,6 +8,8 @@ __pycache__/
 
 # Data 
 data/
+*.session*
+
 
 # Distribution / packaging
 .Python
