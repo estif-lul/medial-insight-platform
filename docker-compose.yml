@@ -12,6 +12,53 @@ services:
       - ./initdb:/docker-entrypoint-initdb.d
     networks:
       - frontend
+  
+  user_code:
+    build:
+      context: .
+      dockerfile: Dockerfile.user_code
+    container_name: ethiomed_user_code
+    image: ethiomed_user_code_image
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "4000:4000"
+    networks:
+      - frontend
+
+  dagster_webserver:
+    build:
+      context: .
+      dockerfile: Dockerfile.dagster
+    container_name: ethiomed_webserver
+    entrypoint: ["dagster-webserver", "-h", "0.0.0.0", "-p", "3000", "-w", "workspace.yaml"]
+    ports:
+      - "3000:3000"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dagster_home:/opt/dagster/dagster_home
+    networks:
+      - frontend
+    depends_on:
+      - postgres
+      - user_code
+
+  dagster_daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile.dagster
+    container_name: ethiomed_daemon
+    entrypoint: ["dagster-daemon", "run"]
+    restart: on-failure
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./dagster_home:/opt/dagster/dagster_home
+    networks:
+      - ethiomed_net
+    depends_on:
+      - postgres
+      - user_code
 
 volumes:
   pgdata:
