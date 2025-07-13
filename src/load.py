@@ -30,7 +30,7 @@ class PostgresLoader:
             data = json.load(f)
 
         valid_records = [(
-            str(r['id']), r['date'], r.get('message', ''), 'photo' in r.get('media', {}), self.channel_name
+            f'{self.channel_name}_{r['id']}', r['date'], r.get('message', ''), 'photo' in r.get('media', {}), self.channel_name
         ) for r in data]
 
         # print(valid_records)
@@ -42,6 +42,7 @@ class PostgresLoader:
                 execute_batch(cursor, """
                     INSERT INTO raw_telegram_messages (message_id, date, message, has_image, channel_name)
                     VALUES (%s, %s, %s, %s, %s)
+                    ON CONFLICT (message_id) DO NOTHING
                 """, valid_records)
                 conn.commit()
                 logging.info(f'Inserted {len(valid_records)} records from {filepath}')
@@ -52,7 +53,7 @@ class PostgresLoader:
 
 
 if __name__ == '__main__':
-    channel_name = 'lobelia4cosmetics'
+    channel_name = 'CheMed123'
     
     data_dir = 'data/raw/telegram_messages'
     latest_data = os.listdir(data_dir)
