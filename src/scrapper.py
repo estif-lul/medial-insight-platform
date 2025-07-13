@@ -15,6 +15,21 @@ api_hash = os.getenv('TG_API_HASH')
 phone = os.getenv('phone')
 
 async def scrape_channel(channel_username, media_dir):
+    """
+    Asynchronously scrapes messages and media from a specified Telegram channel.
+    Connects to the Telegram API using the provided channel username, downloads all messages (including media such as photos),
+    and saves the messages as a JSON file in a structured directory. Media files are saved to the specified media directory.
+    A progress bar is displayed during the scraping process.
+    Args:
+        channel_username (str): The username or ID of the Telegram channel to scrape.
+        media_dir (str): The directory path where downloaded media files will be saved.
+    Raises:
+        telethon.errors.FloodWaitError: If the Telegram API rate limits the requests.
+    Side Effects:
+        - Downloads media files to the specified directory.
+        - Writes a JSON file containing all scraped messages to the data/raw/telegram_messages directory.
+    """
+
     try:
         client = TelegramClient(f'session_{channel_username}', api_id, api_hash)
         await client.start()

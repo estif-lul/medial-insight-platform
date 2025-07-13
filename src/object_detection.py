@@ -18,6 +18,24 @@ class ObjectDetector:
         logging.basicConfig(filename='logs/detection.log', level=logging.INFO)
 
     def detect_object(self, image_path, message_id, channel_name):
+        """
+        Detects objects in an image using the loaded model and returns detection results.
+        Args:
+            image_path (str): Path to the image file to be processed.
+            message_id (Any): Identifier for the message associated with the detection.
+            channel_name (str): Name of the channel where the image originated.
+        Returns:
+            list: A list of dictionaries, each containing:
+                - 'message_id': The provided message ID.
+                - 'channel_name': The provided channel name.
+                - 'class': Detected object class label.
+                - 'confidence': Detection confidence score (rounded to 3 decimals).
+                - 'bbox': Bounding box coordinates [x1, y1, x2, y2] (rounded to integers).
+        Notes:
+            - Only detections with confidence >= 0.5 are included.
+            - Returns an empty list if detection fails or no objects are detected.
+        """
+
         try:
             results = self.model(image_path)
             detections = []
