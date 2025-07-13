@@ -1,0 +1,4 @@
+load_from:
+  - python_file:
+      relative_path: medical_insight_pipeline/jobs.py
+      location_name: medical_insight_jobs

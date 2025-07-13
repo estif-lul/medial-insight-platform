@@ -11,7 +11,7 @@ load_dotenv('.env', override=True)
 DB_URL = os.getenv('POSTGRES_URL')
 
 class PostgresLoader:
-    def __init__(self, db_url, channel_name):
+    def __init__(self, channel_name, db_url = DB_URL):
         self.engine = create_engine(db_url)
         self.channel_name = channel_name
         logging.basicConfig(filename='logs/loader.log', level=logging.INFO)
@@ -60,6 +60,6 @@ if __name__ == '__main__':
     latest_data.sort(reverse=True)
     print(latest_data[0])
 
-    loader = PostgresLoader(DB_URL, channel_name)
+    loader = PostgresLoader(channel_name=channel_name, db_url=DB_URL)
     loader.load_json(f'{data_dir}/{latest_data[0]}/@{channel_name}.json')
 

@@ -11,7 +11,7 @@ DB_URL = os.getenv('POSTGRES_URL')
 
 
 class ObjectDetector:
-    def __init__(self, db_url):
+    def __init__(self, db_url = DB_URL):
         self.engine = create_engine(db_url)
         self.model = YOLO('models/yolov8l.pt')
         # Setup logging
